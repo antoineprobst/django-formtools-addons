@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from formtools.wizard.storage.exceptions import NoFileStorageConfigured
 from formtools.wizard.views import NamedUrlWizardView
 
-from formtools_addons.enums import HTTP_APPLICATION_JSON
+from utils.formtools_addons.enums import HTTP_APPLICATION_JSON
 
 logger = logging.getLogger('formtools_addons.wizard.wizardapi')
 
@@ -70,8 +70,8 @@ class WizardAPIView(NamedUrlWizardView):
                                                          getattr(cls, 'instance_dict', None)) or {},
             'condition_dict': condition_dict or kwargs.pop('condition_dict',
                                                            getattr(cls, 'condition_dict', None)) or {},
-            'json_encoder_class':json_encoder_class or kwargs.pop('json_encoder_class',
-                                                           getattr(cls, 'json_encoder_class', None)) or JsonEncoder,
+            'json_encoder_class': json_encoder_class or kwargs.pop('json_encoder_class',
+                                                                   getattr(cls, 'json_encoder_class', None)) or JsonEncoder,
             'data_step_name': kwargs.pop('data_step_name', 'data'),
             'goto_step_name': kwargs.pop('goto_step_name', 'goto'),
             'prev_step_name': kwargs.pop('prev_step_name', 'prev'),
@@ -205,7 +205,7 @@ class WizardAPIView(NamedUrlWizardView):
             return self.render_state(step=self.storage.current_step)
 
         if step not in self.steps.all:
-           return self.render_response_error('Missing required parameter "step"')
+            return self.render_response_error('Missing required parameter "step"')
 
         # Update current step
         self.storage.current_step = step

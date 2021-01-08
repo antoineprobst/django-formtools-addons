@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import six
+
 from collections import OrderedDict
 
+import six
 from django import forms
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
 from django.forms import formsets
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-
 from formtools.wizard.storage.exceptions import NoFileStorageConfigured
-from formtools.wizard.views import ManagementForm, WizardView as BaseWizardView
+from formtools.wizard.views import ManagementForm
+from formtools.wizard.views import WizardView as BaseWizardView
 
 
 class MultipleFormWizardView(BaseWizardView):
@@ -21,7 +22,7 @@ class MultipleFormWizardView(BaseWizardView):
 
     @classmethod
     def get_initkwargs(cls, form_list=None, initial_dict=None,
-            instance_dict=None, condition_dict=None, *args, **kwargs):
+                       instance_dict=None, condition_dict=None, *args, **kwargs):
         """
         Creates a dict with all needed parameters for the form wizard instances.
 
@@ -48,11 +49,11 @@ class MultipleFormWizardView(BaseWizardView):
 
         kwargs.update({
             'initial_dict': initial_dict or kwargs.pop('initial_dict',
-                getattr(cls, 'initial_dict', None)) or {},
+                                                       getattr(cls, 'initial_dict', None)) or {},
             'instance_dict': instance_dict or kwargs.pop('instance_dict',
-                getattr(cls, 'instance_dict', None)) or {},
+                                                         getattr(cls, 'instance_dict', None)) or {},
             'condition_dict': condition_dict or kwargs.pop('condition_dict',
-                getattr(cls, 'condition_dict', None)) or {}
+                                                           getattr(cls, 'condition_dict', None)) or {}
         })
 
         form_list = form_list or kwargs.pop('form_list', getattr(cls, 'form_list', None)) or []
@@ -77,7 +78,6 @@ class MultipleFormWizardView(BaseWizardView):
             if isinstance(form, (list, tuple)):
                 # if the element is a tuple, add the tuple to the new created
                 # sorted dictionary.
-
                 (step_name, form) = form
                 if isinstance(form, dict):
                     form_mapping = form
@@ -117,9 +117,7 @@ class MultipleFormWizardView(BaseWizardView):
                         raise NoFileStorageConfigured(
                             "You need to define 'file_storage' in your "
                             "wizard view in order to handle file uploads.")
-
         return computed_form_list
-
 
     def render(self, forms=None, **kwargs):
         """
@@ -138,8 +136,8 @@ class MultipleFormWizardView(BaseWizardView):
         # (if available).
         next_step = self.steps.next
         new_forms = self.get_forms(next_step,
-            data=self.storage.get_step_data(next_step),
-            files=self.storage.get_step_files(next_step))
+                                   data=self.storage.get_step_data(next_step),
+                                   files=self.storage.get_step_files(next_step))
 
         # change the stored current step
         self.storage.current_step = next_step
@@ -167,8 +165,8 @@ class MultipleFormWizardView(BaseWizardView):
         # walk through the form list and try to validate the data again.
         for form_key in self.get_form_list():
             form_objs = self.get_forms(step=form_key,
-                data=self.storage.get_step_data(form_key),
-                files=self.storage.get_step_files(form_key))
+                                       data=self.storage.get_step_data(form_key),
+                                       files=self.storage.get_step_files(form_key))
             final_forms[form_key] = []
             for form_obj in form_objs:
                 if not form_obj.is_valid():
@@ -194,7 +192,6 @@ class MultipleFormWizardView(BaseWizardView):
                     delattr(form, '_tag')
                 result_forms[form_key] = formcollection_dict
 
-
         # Construct a result list, ordered by step number
         form_list = [result_forms[key] for key in sorted(result_forms.keys())]
 
@@ -204,7 +201,7 @@ class MultipleFormWizardView(BaseWizardView):
         done_response = self.done(form_list=form_list, form_dict=result_forms_dict, **kwargs)
         self.storage.reset()
         return done_response
-    
+
     def get_form_prefix(self, step=None, form=None):
         """
         Returns the prefix which will be used when calling the actual form for
@@ -272,7 +269,6 @@ class MultipleFormWizardView(BaseWizardView):
 
         # get the form for the current step
         forms = self.get_forms(data=self.request.POST, files=self.request.FILES)
-
         # and try to validate
         all_valid = True
         for form in forms:
@@ -294,7 +290,7 @@ class MultipleFormWizardView(BaseWizardView):
 
         return self.render(forms)
 
-    def get_forms(self, step=None, data=None, files=None):
+    def get_forms(self, step=None, data=None, files=None, forms_list=None):
         """
         Constructs the form for a given `step`. If no `step` is defined, the
         current step will be determined automatically.
@@ -305,9 +301,11 @@ class MultipleFormWizardView(BaseWizardView):
         """
         if step is None:
             step = self.steps.current
-        form_struct = self.form_list[step]
+        if not forms_list:
+            form_struct = self.form_list[step]
+        else:
+            form_struct = forms_list
         # prepare the kwargs for the form instance.
-
         form_collection = []
         if isinstance(form_struct, dict):
             initial_dict = self.get_form_initial(step)
@@ -587,9 +585,9 @@ class NamedUrlMultipleFormWizardView(MultipleFormWizardView):
         elif step_url == self.done_step_name:
             last_step = self.steps.last
             return self.render_done(self.get_forms(step=last_step,
-                data=self.storage.get_step_data(last_step),
-                files=self.storage.get_step_files(last_step)
-            ), **kwargs)
+                                                   data=self.storage.get_step_data(last_step),
+                                                   files=self.storage.get_step_files(last_step)
+                                                   ), **kwargs)
 
         # is the url step name not equal to the step in the storage?
         # if yes, change the step in the storage (if name exists)
