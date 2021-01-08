@@ -21,7 +21,7 @@ Quickstart
 
 Install formtools-addons::
 
-    pip install django-formtools-addons
+    pip install django2-formtools-addons
 
 Then use it in a project::
 
