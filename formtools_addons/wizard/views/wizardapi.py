@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from formtools.wizard.storage.exceptions import NoFileStorageConfigured
 from formtools.wizard.views import NamedUrlWizardView
 
-from utils.formtools_addons.enums import HTTP_APPLICATION_JSON
+from formtools_addons.enums import HTTP_APPLICATION_JSON
 
 logger = logging.getLogger('formtools_addons.wizard.wizardapi')
 

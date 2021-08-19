@@ -1,4 +1,4 @@
-__version__ = '0.1.21'
+__version__ = '0.2.2'
 
 from .wizard.views.multipleformwizard import (
     SessionMultipleFormWizardView, CookieMultipleFormWizardView,

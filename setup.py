@@ -8,7 +8,7 @@ import setuptools
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
