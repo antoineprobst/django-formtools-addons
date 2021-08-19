@@ -4,24 +4,16 @@ import os
 import re
 import sys
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
-from pip.req import parse_requirements
+import setuptools
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 __version__ = '0.2.1'
 
-# parse_requirements() returns generator of pip.req.InstallRequirement objects
-requirements = [str(ir.req) for ir in parse_requirements(os.path.join(BASE_DIR, 'requirements.txt'), session=False)]
-
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-setup(
+setuptools.setup(
     name='django2-formtools-addons',
     version=__version__,
     description="""'Addons for Django 2 Formtools'""",
@@ -31,7 +23,7 @@ setup(
     url='https://github.com/hpe95/django-formtools-addons',
     packages=setuptools.find_packages(),
     include_package_data=True,
-    install_requires=requirements,
+    install_requires=["django >= 2.1", "six >= 1.9"],
     extras_require={},
     license="BSD",
     zip_safe=False,
