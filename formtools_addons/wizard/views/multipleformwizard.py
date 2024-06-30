@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.forms import formsets
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from formtools.wizard.storage.exceptions import NoFileStorageConfigured
 from formtools.wizard.views import ManagementForm
 from formtools.wizard.views import WizardView as BaseWizardView
