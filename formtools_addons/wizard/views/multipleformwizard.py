@@ -314,7 +314,7 @@ class MultipleFormWizardView(BaseWizardView):
             for form_name, form_class in form_struct.items():
                 initial = initial_dict.get(form_name, None) if initial_dict else None
                 instance = instance_dict.get(form_name, None) if instance_dict else None
-                kwargs = self.get_form_kwargs(step)
+                kwargs = self.get_form_kwargs(step, form_name)
                 kwargs.update({
                     'data': data,
                     'files': files,
