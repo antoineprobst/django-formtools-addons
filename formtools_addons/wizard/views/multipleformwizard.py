@@ -423,11 +423,19 @@ class MultipleFormWizardView(BaseWizardView):
                 data=self.storage.get_step_data(form_key),
                 files=self.storage.get_step_files(form_key)
             )
-            for form_obj in form_collection:
+            step = form_key
+
+            multiple_forms = isinstance(self.form_list[step], dict)
+
+            if multiple_forms:
+                multiple_form_keys = list(self.form_list[step].keys())
+
+            for i, form_obj in enumerate(form_collection):
                 if form_obj.is_valid():
-                    if isinstance(form_obj.cleaned_data, (tuple, list)):
+                    form_data = form_obj.cleaned_data
+                    if isinstance(form_data, (tuple, list)):
                         cleaned_data.update({
-                            'formset-%s' % form_key: form_obj.cleaned_data
+                            'formset-' + multiple_form_keys[i]: form_data
                         })
                     else:
                         cleaned_data.update(form_obj.cleaned_data)
@@ -457,7 +465,7 @@ class MultipleFormWizardView(BaseWizardView):
                     if isinstance(form_data, (tuple, list)):
                         form_key = step
                         cleaned_data.update({
-                            'formset-%s' % form_key: form_data
+                            'formset-' + multiple_form_keys[i]: form_data
                         })
                     elif multiple_forms and multiple_form_keys:
                         cleaned_data[multiple_form_keys[i]] = form_data
